@@ -17,12 +17,34 @@ function App() {
       //api call
       axios
         .get(
-          `https://pinballmap.com/api/v1/locations/closest_by_lat_lon.json?lat=${lat}&lon=${lon}`
+          `https://pinballmap.com/api/v1/locations/closest_by_lat_lon.json?lat=${lat}&lon=${lon}&send_all_within_distance=true`
         )
         .then((response) => {
           //set response to variable and set the state to that variable
-          const pinballLoc = response.data.location.name;
-          return setPinball([pinballLoc]);
+          //added in street, city etc and now it wont complete call due to multiple responses
+          //so im trying to map over every location in response and display them...
+          response.data.locations.map((location) => {
+            const pinballPlace = response.data.location.name;
+            const pinballStreet = response.data.location.street;
+            const pinballCity = response.data.location.city;
+            const pinballState = response.data.location.state;
+            const pinballZip = response.data.location.zip;
+            const pinballPhone = response.data.location.phone;
+            const newLocation = [
+              pinballPlace,
+              ", ",
+              pinballStreet,
+              ", ",
+              pinballCity,
+              ", ",
+              pinballState,
+              ", ",
+              pinballZip,
+              ", ",
+              pinballPhone,
+            ];
+            return setPinball([...pinball, newLocation]);
+          });
         });
     };
 
@@ -32,7 +54,9 @@ function App() {
     //function that gets lon and lat
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   };
-
+  //the idea is to have the inputs for lon and lan go to the api call on the click of a button
+  //or if they dont enter anything it will ask for their location and if agreed will grab results
+  //right now only the button works and only for one result
   return (
     <div className="App">
       <input type="text" ref={longitudeRef} />
