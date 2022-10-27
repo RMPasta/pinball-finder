@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "./App.css";
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
   //using this state to display pinball locations
@@ -23,28 +24,8 @@ function App() {
           //set response to variable and set the state to that variable
           //added in street, city etc and now it wont complete call due to multiple responses
           //so im trying to map over every location in response and display them...
-          response.data.locations.map((location) => {
-            const pinballPlace = response.data.location.name;
-            const pinballStreet = response.data.location.street;
-            const pinballCity = response.data.location.city;
-            const pinballState = response.data.location.state;
-            const pinballZip = response.data.location.zip;
-            const pinballPhone = response.data.location.phone;
-            const newLocation = [
-              pinballPlace,
-              ", ",
-              pinballStreet,
-              ", ",
-              pinballCity,
-              ", ",
-              pinballState,
-              ", ",
-              pinballZip,
-              ", ",
-              pinballPhone,
-            ];
-            return setPinball([...pinball, newLocation]);
-          });
+
+          setPinball(response.data.locations);
         });
     };
 
@@ -54,6 +35,7 @@ function App() {
     //function that gets lon and lat
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   };
+
   //the idea is to have the inputs for lon and lan go to the api call on the click of a button
   //or if they dont enter anything it will ask for their location and if agreed will grab results
   //right now only the button works and only for one result
@@ -62,7 +44,15 @@ function App() {
       <input type="text" ref={longitudeRef} />
       <input type="text" ref={latitudeRef} />
       <button onClick={getNearestPinball}>Where's the pinball?!</button>
-      <div>{pinball}</div>
+      <ul>
+        {pinball.map((locations) => (
+          <li key={uuidv4()}>
+            <strong>{locations.name}</strong> /// {locations.street},{" "}
+            {locations.city}, {locations.state}, ///{" "}
+            <strong>{locations.num_machines} Machine(s)</strong>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
