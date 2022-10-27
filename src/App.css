@@ -1,10 +1,18 @@
 .App {
   text-align: center;
-
+  margin-top: 0.5rem;
 }
 
 li {
   margin-top: 1.1rem;
   list-style: none;
-  word-spacing: .2rem;
+  word-spacing: 0.2rem;
+}
+
+.button-wrapper {
+  margin: 1rem 1rem;
+}
+
+label {
+  margin: 1rem 1rem;
 }
